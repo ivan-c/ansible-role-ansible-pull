@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    # Use git repo dir name instead of role name
+    - role: ansible-role-ansible-pull
+      become: yes
