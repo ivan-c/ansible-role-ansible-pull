@@ -1,0 +1,47 @@
+# playbook for debugging molecule instance creation
+---
+- debug:
+    msg: '`vagrant up` timed out; dumping debug info before attempting rescue'
+
+- name: Add marker to log files
+  lineinfile:
+    line: '#### VAGRANT DRIVER TIMEOUT ####'
+    path: "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}/{{item}}"
+    insertafter: EOF
+  loop:
+    - vagrant-buster.out
+    - vagrant-buster.err
+
+- debug:
+    var: server
+
+- name: virsh list (before rescue attempt)
+  command: virsh list --all
+  register: pre_virsh_list
+- debug:
+    var: pre_virsh_list
+
+- name: vagrant global-status (before rescue attempt)
+  command: vagrant global-status
+  args:
+    chdir: "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}"
+  register: pre_global_status
+- debug:
+    var: pre_global_status
+
+- name: vagrant status (before rescue attempt)
+  command: vagrant status
+  args:
+    chdir: "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}"
+  register: pre_status_result
+- debug:
+    var: pre_status_result
+
+- name: find keys
+  command: find /home -name "*private_key" -type f
+  args:
+    chdir: "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}"
+  register: vagrant_ssh_keys
+  ignore_errors: yes
+- debug:
+    var: vagrant_ssh_keys

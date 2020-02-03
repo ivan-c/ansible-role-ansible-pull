@@ -44,6 +44,10 @@
           until: job_result.finished
           retries: 15
 
+        - name: Simulate CI failure if running locally
+          command: /bin/false
+          when: '"runner" not in hostvars[inventory_hostname]["molecule_ephemeral_directory"]'
+
         - name: Populate instance config dict
           set_fact:
             instance_conf_dict: {
@@ -60,6 +64,8 @@
       rescue:
         # attempt recovery
         # read vagrant CLI output directly
+        - name: import debugging tasks
+          import_tasks: create-debug.yml
 
         - name: get vagrant ssh-config
           command: vagrant ssh-config
@@ -96,6 +102,9 @@
     # NOTE(retr0h): Vagrant/VBox sucks and parallelizing instance creation
     # causes issues.
     # Mandatory configuration for Molecule to function.
+
+    - debug:
+        var: instance_config_dict
 
     - name: Convert instance config dict to a list
       set_fact:

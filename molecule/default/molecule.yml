@@ -27,6 +27,8 @@ provisioner:
     ansible_ssh_user: vagrant
     # allow override of default ssh key
     ansible_ssh_private_key_file: ${VAGRANT_KEY:-~/.cache/molecule/ansible-role-ansible-pull/default/.vagrant/machines/buster/libvirt/private_key}
+  options:
+    vvv: True
   playbooks:
     converge: playbook.yml
     create: create.yml

@@ -31,9 +31,71 @@ jobs:
       - name: Install test dependencies
         run: sudo tox --notest
 
+      - name: Modify vagrant (molecule-managed) loglevel
+        # hard-code loglevel
+        # https://github.com/ansible/molecule/blob/2.20.1/molecule/provisioner/ansible/plugins/libraries/molecule_vagrant.py#L473
+        run: |
+          sudo find .tox -name molecule_vagrant.py -print -exec sed -i "474i \ \ \ \ \ \ \ \ env['VAGRANT_LOG'] = 'debug'" {} \;
+          sudo cat .tox/testenv/lib/python3.6/site-packages/molecule/provisioner/ansible/plugins/libraries/molecule_vagrant.py
+          sudo rm -R .tox/testenv/lib/python3.6/site-packages/molecule/provisioner/ansible/plugins/libraries/__pycache__
+
       - name: Run molecule tests
         run: sudo VAGRANT_KEY="$VAGRANT_KEY" timeout 1h tox
         env:
           # use default ssh key
           # `vagrant up` unable to install secure key
           VAGRANT_KEY: ~/.vagrant.d/insecure_private_key
+
+      - name: Copy and prepare vagrant (molecule-managed) logs for upload
+        if: always()
+        run: |
+          sudo find /home/runner/.cache/molecule/ansible-role-ansible-pull/default -name "vagrant-*" -type f -print -exec cp {} /tmp \;
+          sudo find /tmp -name "vagrant-*" -type f -print -exec sed -i '/Progress:/d' {} \;
+          sudo find /tmp -name "vagrant-*" -type f -print -exec sed -i '/INFO interface: info:/d' {} \;
+          sudo chmod 666 /tmp/vagrant-*
+          sudo chown runner /tmp/vagrant-*
+          ls -l /tmp/
+
+      - name: Upload vagrant debug log
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: vagrant-buster.out
+          path: /tmp/vagrant-buster.out
+
+      - name: Upload vagrant error log
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: vagrant-buster.err
+          path: /tmp/vagrant-buster.err
+
+      - name: Dump (molecule-managed) vagrant files
+        if: always()
+        run: |
+          sudo find /home/runner/.cache/molecule/ansible-role-ansible-pull/default -type f -print -exec grep -v -e 'INFO interface: info: ' -e Progress: {} \;
+
+      - run: sudo virsh net-list --all
+        if: always()
+      - run: virt-host-validate || true
+        if: always()
+      - run: sudo virsh capabilities
+        if: always()
+      - name: Dump libvirt logs
+        run: sudo find /var/log/libvirt/ -type f -print -exec cat {} \;
+        if: always()
+
+      - run: sudo iptables -L -v -n
+        if: always()
+
+      - run: sudo virt-cat -d default_buster /var/log/auth.log || true
+        if: always()
+
+      - run: sudo virt-cat -d default_buster /var/log/daemon.log || true
+        if: always()
+
+      - run: sudo virt-cat -d default_buster /var/log/kern.log || true
+        if: always()
+
+      - run: sudo virt-cat -d default_buster /var/log/bootstrap.log || true
+        if: always()
