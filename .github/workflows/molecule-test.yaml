@@ -1,0 +1,35 @@
+---
+name: ⚛️Molecule testing
+on: [push]
+jobs:
+  molecule-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Install vagrant and libvirt packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends libvirt-daemon-system vagrant vagrant-libvirt qemu qemu-utils qemu-kvm ebtables libguestfs-tools libnss-libvirt
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      # https://libvirt.org/nss.html#Configuration
+      - name: Add libvirt to NSS config
+        run: |
+          sudo sed -i 's|hosts:          files |hosts:          files libvirt libvirt_guest |g' /etc/nsswitch.conf
+
+      - name: Install test runner
+        run: |
+          python3 -m pip install tox
+          sudo python3 -m pip install tox
+
+      - name: Install test dependencies
+        run: sudo tox --notest
+
+      - name: Run molecule tests
+        run: sudo timeout 1h tox
