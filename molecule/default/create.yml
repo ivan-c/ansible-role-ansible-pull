@@ -57,6 +57,42 @@
           register: instance_config_dict
           when: server.changed | bool
 
+      rescue:
+        # attempt recovery
+        # read vagrant CLI output directly
+
+        - name: get vagrant ssh-config
+          command: vagrant ssh-config
+          args:
+            chdir: "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}"
+          register: vagrant_ssh_config
+        - debug:
+            var: vagrant_ssh_config
+
+        - name: Populate instance config from `vagrant ssh-config` output
+          set_fact:
+            "{{ item.var_name }}": "{{ vagrant_ssh_config.stdout_lines | select('search', item.ssh_conf_var_name) | first | regex_replace('\\s*\\w+ (.+)', '\\1')  }}"
+          loop:
+            - {var_name: 'instance_conf__instance', ssh_conf_var_name: 'Host '}
+            - {var_name: 'instance_conf__address', ssh_conf_var_name: 'HostName '}
+            - {var_name: 'instance_conf__user', ssh_conf_var_name: 'User '}
+            - {var_name: 'instance_conf__port', ssh_conf_var_name: 'Port '}
+            - {var_name: 'instance_conf__identity_file', ssh_conf_var_name: 'IdentityFile '}
+
+        - name: Populate instance config dict
+          set_fact:
+            instance_conf_dict: {
+              'instance': "{{ instance_conf__instance }}",
+              'address': "{{ instance_conf__address }}",
+              'user': "{{ instance_conf__user }}",
+              'port': "{{ instance_conf__port }}",
+              'identity_file': "{{ instance_conf__identity_file }}",
+              # correct vagrant-managed ssh key below
+              # 'identity_file': "{{ hostvars[inventory_hostname]['molecule_ephemeral_directory'] }}/.vagrant/machines/instance/libvirt/private_key",
+            }
+          with_items: "{{ server.results }}"
+          register: instance_config_dict
+
     # NOTE(retr0h): Vagrant/VBox sucks and parallelizing instance creation
     # causes issues.
     # Mandatory configuration for Molecule to function.
