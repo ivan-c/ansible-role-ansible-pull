@@ -1,10 +1,10 @@
 ---
+- name: Reload systemd files
+  systemd:
+    daemon_reload: yes
+
 - name: Restart ansible_pull service
   service:
     name: ansible_pull.timer
     state: restarted
     enabled: yes
-
-- name: Reload systemd files
-  systemd:
-    daemon_reload: yes
