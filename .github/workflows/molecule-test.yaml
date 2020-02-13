@@ -27,7 +27,6 @@ jobs:
 
       - name: Install test runner
         run: |
-          python3 -m pip install tox
           sudo python3 -m pip install tox
 
       - name: Install test dependencies
