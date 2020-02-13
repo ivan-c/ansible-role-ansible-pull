@@ -14,7 +14,9 @@ jobs:
           python-version: 3.7
 
       - name: Install vagrant and libvirt packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends libvirt-daemon-system vagrant vagrant-libvirt qemu qemu-utils qemu-kvm ebtables libguestfs-tools libnss-libvirt
+        run: |
+          sudo apt-get update && sudo apt-get install --no-install-recommends python3-setuptools
+          sudo apt-get update && sudo apt-get install --no-install-recommends libvirt-daemon-system vagrant vagrant-libvirt qemu qemu-utils qemu-kvm ebtables libguestfs-tools libnss-libvirt
         env:
           DEBIAN_FRONTEND: noninteractive
 
