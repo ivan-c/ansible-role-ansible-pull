@@ -5,3 +5,5 @@
     # Use git repo dir name instead of role name
     - role: ansible-role-ansible-pull
       become: yes
+  vars:
+    ansible_pull_playbook_repo: http://github.com/example/repo
