@@ -7,7 +7,7 @@ After=network.target
 {% for env_var_name, env_var_value in ansible_pull_service_environment.items() %}
 Environment={{ env_var_name }}={{ env_var_value }}
 {% endfor %}
-ExecStart=/usr/bin/ansible_pull_wrapper.sh
+ExecStart=/usr/bin/ansible_pull_wrapper.sh --url {{ ansible_pull_playbook_repo }}
 Type=oneshot
 
 [Install]

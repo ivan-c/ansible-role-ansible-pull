@@ -71,11 +71,10 @@ while :; do
     shift
 done
 
+"${repo_url:?Variable not set or empty}"
+
 default_checkout_dir=/tmp/ansible
 checkout_dir="${checkout_dir:-$default_checkout_dir}"
-
-default_repo_url='https://github.com/ivan-c/ansible-bootstrap'
-repo_url="${repo_url:-$default_repo_url}"
 
 # add user-installed pip paths
 PATH="${PATH}:${HOME}/.local/bin"
