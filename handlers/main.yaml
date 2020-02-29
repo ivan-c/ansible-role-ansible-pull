@@ -3,7 +3,7 @@
   systemd:
     daemon_reload: yes
 
-- name: Restart ansible_pull service
+- name: Enable ansible_pull service
   service:
     name: ansible_pull.timer
     enabled: yes

@@ -14,4 +14,4 @@
     - ansible_pull.timer
   notify:
     - Reload systemd files
-    - Restart ansible_pull service
+    - Enable ansible_pull service
