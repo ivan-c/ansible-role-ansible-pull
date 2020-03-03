@@ -6,4 +6,4 @@
 # todo: use service module when fixed
 # https://github.com/ansible/ansible/issues/48786
 - name: Enable ansible_pull service
-  command: systemctl enable ansible_pull.timer
+  command: systemctl enable ansible_pull.timer  # noqa 303
