@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# defaults installed by ansible
+[Service]
+{% for env_var_name, env_var_value in ansible_pull_service_environment.items() %}
+Environment={{ env_var_name }}={{ env_var_value }}
+{% endfor %}

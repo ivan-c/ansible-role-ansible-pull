@@ -8,6 +8,14 @@
     group: root
     mode: '0755'
 
+- name: Create ansible-pull service override directory
+  file:
+    path: /etc/systemd/system/ansible_pull.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: Install systemd files
   template:
     src: "{{ item }}.j2"
@@ -18,6 +26,7 @@
   with_items:
     - ansible_pull.service
     - ansible_pull.timer
+    - ansible_pull.service.d/90ansible-pull-defaults.conf
   notify:
     - Reload systemd files
     - Enable ansible_pull service
