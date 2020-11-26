@@ -32,6 +32,10 @@ provisioner:
     create: create.yml
   lint:
     name: ansible-lint
+    options:
+      x:
+        # Skip role name lint error
+        - 106
 verifier:
   name: testinfra
   lint:
