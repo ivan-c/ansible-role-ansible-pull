@@ -6,7 +6,7 @@
     dest: /usr/local/bin
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
 
 - name: Create ansible-pull service override directory
   file:
@@ -14,7 +14,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: 0755
 
 - name: Install systemd files
   template:
@@ -22,7 +22,7 @@
     dest: /etc/systemd/system/{{ item }}
     owner: root
     group: root
-    mode: '0644'
+    mode: 0644
   with_items:
     - ansible_pull.service
     - ansible_pull.timer
