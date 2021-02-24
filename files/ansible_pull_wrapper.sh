@@ -125,8 +125,8 @@ while :; do
     shift
 done
 
-# add user-installed pip paths
-PATH="${PATH}:${HOME}/.local/bin"
+# add user-installed paths
+PATH="${PATH}:/usr/local/bin:${HOME}/.local/bin"
 
 
 # precedence: environment variable, commandline option, default
