@@ -1,7 +1,7 @@
 ---
 
 - name: Install ansible-pull wrapper script
-  copy:
+  ansible.builtin.copy:
     src: files/ansible_pull_wrapper.sh
     dest: /usr/local/bin
     owner: root
@@ -9,7 +9,7 @@
     mode: 0755
 
 - name: Create ansible-pull service override directory
-  file:
+  ansible.builtin.file:
     path: /etc/systemd/system/ansible_pull.service.d/
     state: directory
     owner: root
@@ -17,7 +17,7 @@
     mode: 0755
 
 - name: Install systemd files
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: /etc/systemd/system/{{ item }}
     owner: root

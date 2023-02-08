@@ -1,9 +1,9 @@
 ---
 - name: Reload systemd files
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: yes
 
-# todo: use service module when fixed
+# TODO use service module when fixed
 # https://github.com/ansible/ansible/issues/48786
 - name: Enable ansible_pull service
-  command: systemctl enable ansible_pull.timer  # noqa 303
+  ansible.builtin.command: systemctl enable ansible_pull.timer  # noqa command-instead-of-module
