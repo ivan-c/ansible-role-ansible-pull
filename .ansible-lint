@@ -1,0 +1,19 @@
+# https://ansible-lint.readthedocs.io/configuring/
+
+exclude_paths:
+  # TODO remove when updated to latest version of molecule
+  - molecule/
+
+skip_list:
+  # TODO remove when fixed
+  # this rule is not correctly skipped
+  # https://github.com/ansible/ansible-compat/issues/78
+  - role-name
+
+enable_list:
+  # TODO programatically add all rules tagged as 'opt-in'
+  # opt-in rules
+  - empty-string-compare  # opt-in
+  - no-log-password  # opt-in
+  - no-same-owner  # opt-in
+  - name[prefix]  # opt-in
