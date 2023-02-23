@@ -14,16 +14,16 @@ jobs:
           python-version: 3.x
 
       - name: Install vagrant and libvirt packages
-        run: |
-          sudo apt-get update && sudo apt-get install --no-install-recommends python3-setuptools
-          sudo apt-get update && sudo apt-get install --no-install-recommends libvirt-daemon-system vagrant vagrant-libvirt qemu qemu-utils qemu-kvm ebtables libguestfs-tools libnss-libvirt
+        run: >
+          sudo apt-get update &&
+
+          sudo apt-get install --no-install-recommends
+          libvirt-daemon-system
+          vagrant-libvirt
+          qemu-kvm
+          libguestfs-tools
         env:
           DEBIAN_FRONTEND: noninteractive
-
-      # https://libvirt.org/nss.html#Configuration
-      - name: Add libvirt to NSS config
-        run: |
-          sudo sed -i 's|hosts:          files |hosts:          files libvirt libvirt_guest |g' /etc/nsswitch.conf
 
       - name: Install test runner
         run: |
