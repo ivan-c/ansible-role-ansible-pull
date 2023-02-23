@@ -1,3 +1,11 @@
-ansible==2.9.1
-molecule==2.22
-python-vagrant==0.5.15
+molecule==4.0.4
+
+molecule-plugins[vagrant]==v23.0.0
+python-vagrant==1.0.0
+
+# ansible-compat 3.0 requires ansible 2.11
+ansible-compat<3.0
+
+# track debian stable version of ansible (roughly)
+# https://packages.debian.org/bullseye/ansible
+ansible==2.10.7

@@ -1,43 +1,9 @@
-# set MOLECULE_GLOB environment variable to full path of this file
 ---
 platforms:
-  # use default hostname associated with box
-  # guest hostname doesn't seem to get updated on VM host
-  - name: buster
-    box: debian/buster64
-    provider_options:
-      # unquoted value raises exception
-      # Message: NameError: undefined local variable or method `qemu' for main:Object
-      driver: "'qemu'"
-      emulator_path: "'/usr/bin/qemu-system-x86_64'"
-      machine_arch: "'x86_64'"
+  - name: bullseye
+    box: debian/bullseye64
 driver:
   name: vagrant
   provider:
     name: libvirt
-dependency:
-  name: galaxy
-lint:
-  name: yamllint
-  options:
-    config-file: .yamllint
-provisioner:
-  name: ansible
-  connection_options:
-    ansible_ssh_user: vagrant
-    # allow override of default ssh key
-    # TODO remove hardcoded reference to checkout path
-    ansible_ssh_private_key_file: ${VAGRANT_KEY:-~/.cache/molecule/ansible-role-ansible-pull/default/.vagrant/machines/buster/libvirt/private_key}
-  playbooks:
-    converge: playbook.yml
-    create: create.yml
-  lint:
-    name: ansible-lint
-    options:
-      x:
-        # Skip role name lint error
-        - 106
-verifier:
-  name: testinfra
-  lint:
-    name: flake8
+  provision: true
