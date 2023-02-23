@@ -15,8 +15,6 @@ jobs:
 
       - name: Install vagrant and libvirt packages
         run: >
-          sudo apt-get update &&
-
           sudo apt-get install --no-install-recommends
           libvirt-daemon-system
           vagrant-libvirt
