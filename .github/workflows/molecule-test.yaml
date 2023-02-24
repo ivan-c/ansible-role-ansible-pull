@@ -24,11 +24,19 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
 
       - name: Install test runner
-        run: |
-          sudo python3 -m pip install tox
+        run: python3 -m pip install tox
 
       - name: Install test dependencies
-        run: sudo tox --notest
+        run: tox --notest
+
+        # HACK molecule does not emit colored output with sudo
+      - name: Allow any user to run libvirt
+        run: sudo chmod 777 /var/run/libvirt/libvirt-sock
 
       - name: Run molecule tests
-        run: sudo timeout 1h tox
+        run: timeout 1h tox
+        # force color output
+        # https://www.jeffgeerling.com/blog/2020/getting-colorized-output-molecule-and-ansible-on-github-actions-ci
+        env:
+          PY_COLORS: 1
+          ANSIBLE_FORCE_COLOR: 1
