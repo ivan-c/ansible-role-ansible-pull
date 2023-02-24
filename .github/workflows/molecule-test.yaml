@@ -23,6 +23,15 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
 
+      - name: Grant libvirt access to current user
+        run: sudo usermod -a -G libvirt $(whoami)
+
+      - name: Debug `groups`
+        run: groups
+
+      - name: Debug groups
+        run: id $(whoami)
+
       - name: Install test runner
         run: python3 -m pip install tox
 
