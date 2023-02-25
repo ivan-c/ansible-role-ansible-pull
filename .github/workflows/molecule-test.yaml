@@ -6,7 +6,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
 
       - name: Set up Python 3
         uses: actions/setup-python@v4
@@ -14,14 +15,12 @@ jobs:
           python-version: 3.x
 
       - name: Install vagrant and libvirt packages
-        run: >
+        run:
           sudo apt-get install --no-install-recommends
-          libvirt-daemon-system
-          vagrant-libvirt
-          qemu-kvm
-          libguestfs-tools
-        env:
-          DEBIAN_FRONTEND: noninteractive
+            libvirt-daemon-system
+            vagrant-libvirt
+            qemu-kvm
+            libguestfs-tools
 
       - name: Install test runner
         run: python3 -m pip install tox
@@ -31,7 +30,7 @@ jobs:
 
         # HACK molecule does not emit colored output with sudo
       - name: Allow any user to run libvirt
-        run: sudo chmod 777 /var/run/libvirt/libvirt-sock
+        run: sudo chmod o+rw /var/run/libvirt/libvirt-sock
 
       - name: Run molecule tests
         run: timeout 1h tox
