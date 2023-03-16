@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: ansible_pull
-  namespace: ivanc
+  namespace: ivan_c
   description: ansible-pull wrapper and service files
   author: Ivan Cvitkovic
   license: BSD
