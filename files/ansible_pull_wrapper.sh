@@ -2,9 +2,6 @@
 
 
 cmdname="$(basename "$0")"
-bin_path="$(cd "$(dirname "$0")" && pwd)"
-repo_path="${bin_path}/.."
-
 
 usage() {
     cat << USAGE >&2
@@ -14,7 +11,6 @@ Usage:
     Wrapper for ansible-pull
     Install dependencies with ansible-galaxy and run ansible-pull with defaults
 USAGE
-    exit 1
 }
 
 die(){
@@ -31,6 +27,7 @@ ensure_checkout() {
         return
     fi
     echo "Setting up checkout..."
+    # shellcheck disable=SC2086 # allow word splitting for space-separated arguments
     ansible-pull \
         --url "$repo_url" \
         --directory "$checkout_dir" \
@@ -58,6 +55,7 @@ hostname="$(hostname)"
 default_checkout_dir="${HOME}/.ansible/pull/${hostname}"
 
 # copy arguments; option parsing is destructive
+# shellcheck disable=SC2124 # allow word splitting for space-separated arguments
 ARGS=$@
 
 # parse arguments before passing to ansible-galaxy
@@ -136,6 +134,7 @@ checkout_dir="${ANSIBLE_PULL_DIRECTORY:-${checkout_dir:-$default_checkout_dir}}"
 # TODO assign by filename pattern
 export ANSIBLE_INVENTORY="${ANSIBLE_INVENTORY:-"$checkout_dir"/hosts.ini}"
 
+# shellcheck disable=SC2015 # set to empty on failure
 default_repo_url="$(cd "$checkout_dir" 2> /dev/null && git remote get-url origin || true)"
 repo_url="${ANSIBLE_PULL_URL:-${repo_url:-$default_repo_url}}"
 
@@ -155,6 +154,7 @@ if [ -f "$ANSIBLE_INVENTORY" ] && grep --quiet "$hostname" "$ANSIBLE_INVENTORY";
     limit_opt="--limit $hostname"
 fi
 
+# shellcheck disable=SC2086 # allow word splitting for space-separated arguments
 ansible-pull \
     $limit_opt \
     --url "$repo_url" \

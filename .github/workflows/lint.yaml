@@ -12,3 +12,13 @@ jobs:
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint-action@v6.11.0
+
+  shellcheck:
+    name: Shell script linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: --exclude SC3043
