@@ -31,12 +31,16 @@ ensure_checkout() {
         return
     fi
     echo "Setting up checkout..."
-    ansible-pull \
+    output=$(ansible-pull \
         --url "$repo_url" \
         --directory "$checkout_dir" \
         $ARGS \
         --check \
-    > /dev/null || true
+    ) || exit_code=$?
+    if [ ! -d "$checkout_dir" ] && [ $exit_code != 0 ]; then
+        echo Failed to create checkout at $checkout_dir
+        die "$output"
+    fi
 }
 
 install_roles() {
